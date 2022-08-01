@@ -1,45 +1,56 @@
-const numberInput = document.getElementById("input");
-const checkButton = document.getElementById("check-button");
-const randomNumber = Math.floor(Math.random()*100);
-const output = document.getElementById("output");
-console.log(randomNumber);
-const counter = document.getElementById("counter");
-const container = document.getElementById("container");
-const replay=document.getElementById("replay");
-checkButton.addEventListener("click", ()=>{
-  guessing()
-})
-let count = 0;
+const form = document.querySelector("form");
+const randomNumber =  randomNumberGeneretor();
+const limit = document.getElementById("limit");
+let  guessCount = 1;
 
-const guessing= ()=>{
-  var prediction = numberInput.value;
-  prediction = Number(prediction);
-
-  if(prediction>100 || prediction<0 || isNaN(prediction) || prediction ==""){
-    output.innerHTML=`Please enter a valid number between 1 and 100
-`;
-  }else{
-    count++
-    counter.innerHTML=`Number of tries : ${count}`;
-    if(prediction==randomNumber) {
-      // output.innerHTML=`Congratulations!`
-      output.innerHTML="<img src=\'./img/genius.gif' width=\'400px\' height=\'250px\'>";
-
-      checkButton.style.display="none";
-      container.innerHTML+=`<button id="replay" class="replay" style=padding:"5px";>Replay</button>`
-      const replay=document.getElementById("replay");
-      replay.addEventListener("click",()=>{
-      location.reload()
-  })
-    }
-    else if (prediction>randomNumber) {
-      output.innerHTML=`Enter a smaller number`
-      
-    }
-    else if (prediction<randomNumber) {
-      output.innerHTML=`Enter a bigger number`
-      
-    }
-  }
- 
+let lowest = 1
+let highest = 100
+const display = function (){
+    limit.innerText = `Enter a number and win! \n (between ${lowest} and ${highest})`;
 }
+
+display()
+console.log("Random Number: ", randomNumber);
+document.getElementById("guessNumber").focus();
+
+
+document.getElementById("button").onclick = function() {      
+
+    // number guessed by user     
+    const guessNumber = +document.getElementById("guessNumber").value;
+    console.log("guessNumber: ", guessNumber);
+
+    if( randomNumber == guessNumber) {    
+
+        limit.innerText =`CONGRATULATIONS!!! \n YOU GUESSED IT RIGHT IN ${guessCount} GUESSES`;
+    }
+    else if(randomNumber < guessNumber) {    
+        guessCount++;
+        if(guessNumber > randomNumber && guessNumber < highest){
+            highest = +guessNumber;
+            display()
+        }
+        alert(`ENTER A SMALLER NUMBER`);
+    }
+    else if (randomNumber > guessNumber) {
+        guessCount++;
+        if(guessNumber > lowest){
+            lowest = +guessNumber;
+            display()
+        }
+        alert(`ENTER A GREATER NUMBER`)
+    }
+    else if (isNaN(guessNumber) ) {
+        alert("PLEASE ENTER A VALID NUMBER!")
+    }
+
+    form.reset();
+    document.getElementById("guessNumber").focus();
+
+ }
+
+ function randomNumberGeneretor(){
+    return Math.floor(Math.random() * 100 + 1);
+ }
+
+ 
